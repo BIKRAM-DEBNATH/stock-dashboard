@@ -5,20 +5,21 @@ import { AIPredictionCard } from "@/components/ai-prediction"
 import { TrendingUp, TrendingDown, BarChart3, DollarSign, Activity, Volume2 } from "lucide-react"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, LineChart, Line } from "recharts"
 import { cn } from "@/lib/utils"
-import type { Company, StockPrice } from "@/lib/mock-data"
-import type { CompanyStats } from "@/lib/api-client"
-import { usePrediction } from "@/lib/api-client"
+import { usePrediction, useCompanies, useStockPrices, useCompanyStats } from "@/lib/api-client"
 
 interface ChartAreaProps {
-  company: Company | null
-  stockPrices: StockPrice[]
-  stats: CompanyStats | null
-  loading: boolean
-  error: string | null
+  selectedCompanyId: string | null
 }
 
-export function ChartArea({ company, stockPrices, stats, loading, error }: ChartAreaProps) {
-  const { prediction, loading: predictionLoading, error: predictionError } = usePrediction(company?.id || null)
+export function ChartArea({ selectedCompanyId }: ChartAreaProps) {
+  const { companies } = useCompanies()
+  const { stockPrices, loading: pricesLoading, error: pricesError } = useStockPrices(selectedCompanyId)
+  const { stats, loading: statsLoading, error: statsError } = useCompanyStats(selectedCompanyId)
+  const { prediction, loading: predictionLoading, error: predictionError } = usePrediction(selectedCompanyId)
+
+  const company = companies.find((c) => c.id === selectedCompanyId) || null
+  const loading = pricesLoading || statsLoading
+  const error = pricesError || statsError
 
   if (!company) {
     return (
@@ -134,9 +135,11 @@ export function ChartArea({ company, stockPrices, stats, loading, error }: Chart
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Avg Volume</CardTitle>
-              <Volume2 className="h-4 w-4 text-muted-foreground" />
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Volume2 className="h-5 w-5" />
+                Avg Volume
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{(stats.avgVolume / 1000).toFixed(0)}K</div>

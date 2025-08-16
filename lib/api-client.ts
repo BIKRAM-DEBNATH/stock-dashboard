@@ -142,3 +142,49 @@ export function usePrediction(companyId: number | null) {
 
   return { prediction, loading, error }
 }
+
+export function useStockPrices(companyId: string | null) {
+  const [stockPrices, setStockPrices] = useState<StockPrice[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!companyId) {
+      setStockPrices([])
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    ApiClient.getStockPrices(Number.parseInt(companyId))
+      .then(setStockPrices)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [companyId])
+
+  return { stockPrices, loading, error }
+}
+
+export function useCompanyStats(companyId: string | null) {
+  const [stats, setStats] = useState<CompanyStats | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!companyId) {
+      setStats(null)
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    ApiClient.getCompanyStats(Number.parseInt(companyId))
+      .then(setStats)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [companyId])
+
+  return { stats, loading, error }
+}
