@@ -17,9 +17,15 @@ interface CompanyListProps {
 }
 
 export function CompanyList({ selectedCompanyId, onCompanySelect }: CompanyListProps) {
-  const { data: companies, isLoading, error } = useCompanies()
+  const { companies, loading, error } = useCompanies()
 
-  if (isLoading) {
+  console.log("[v0] CompanyList rendering")
+  console.log("[v0] Companies data:", companies)
+  console.log("[v0] Loading state:", loading)
+  console.log("[v0] Error state:", error)
+
+  if (loading) {
+    console.log("[v0] Showing loading state")
     return (
       <div className="p-4">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Companies</h2>
@@ -33,6 +39,7 @@ export function CompanyList({ selectedCompanyId, onCompanySelect }: CompanyListP
   }
 
   if (error) {
+    console.log("[v0] Showing error state:", error)
     return (
       <div className="p-4">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Companies</h2>
@@ -45,6 +52,8 @@ export function CompanyList({ selectedCompanyId, onCompanySelect }: CompanyListP
       </div>
     )
   }
+
+  console.log("[v0] Rendering companies list with", companies?.length, "companies")
 
   return (
     <div className="h-full flex flex-col">

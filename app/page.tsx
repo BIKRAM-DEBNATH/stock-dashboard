@@ -8,6 +8,9 @@ import { ChartArea } from "@/components/chart-area"
 export default function Dashboard() {
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null)
 
+  console.log("[v0] Dashboard component rendering")
+  console.log("[v0] Selected company ID:", selectedCompanyId)
+
   return (
     <div className="min-h-screen bg-slate-50">
       <Header />
